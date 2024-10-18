@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:8.0
+    restart: unless-stopped
+    env_file: ./.env
+    container_name: database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - $DATABASE_LOCAL_PORT:$DATABASE_DOCKER_PORT
+    volumes:
+      - db_volume:/data/db
+    networks:
+      - mini-net
+
+  flask-app:
+    depends_on:
+      - database
+    image: marieme27/flask-app:v3.0.0
+    restart: unless-stopped
+    container_name: flask-app
+    env_file: ./.env
+    ports:
+      - $APP_LOCAL_PORT:$APP_DOCKER_PORT
+    environment:
+      DATABASE_HOST: ${MYSQL_HOST}
+      DATABASE_USER: ${MYSQL_USER}
+      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
+      DATABASE_NAME: ${MYSQL_DB}
+      DATABASE_PORT: ${DATABASE_PORT}
+    networks:
+      - mini-net
+
+networks:
+  mini-net:
+  
+volumes:
+  db_volume:
