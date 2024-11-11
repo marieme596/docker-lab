@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
 import os
@@ -8,6 +9,8 @@ from .create_db import create_db_if_not_exists
 
 app = Flask(__name__)
 
+logging.basicConfig(level=logging.DEBUG)
+
 app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
 app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
 app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
@@ -15,6 +18,24 @@ app.config['MYSQL_DB'] = os.environ['MYSQL_DB']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
+
+@app.route('/health/live', methods=['GET'])
+def liveness():
+    return jsonify(status="alive"), 200
+
+
+@app.route('/health/ready', methods=['GET'])
+def readiness():
+    try:
+        cur = mysql.connection.cursor()
+        #cur.execute("SELECT VERSION()")
+        #version = cur.fetchone()
+        #print(f"MySQL version : {version[0]}")
+        cur.execute("SELECT 1")
+        cur.close()
+        return jsonify(status="ready"), 200
+    except Exception as e:
+        return jsonify(status="unavailable", error= str(e)), 503
 
 
 @app.route('/')

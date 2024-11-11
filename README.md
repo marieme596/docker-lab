@@ -7,7 +7,7 @@ MySQL is the database used to communicate with the API and to do the following r
 - get all doctors with their infos
 - update doctor information except of the specialty
 - suppress a doctor
-- 
+
 When running the API, a table named `doctors` is automatically created whatever request you send.
 
 ## How to run the application with Docker ?
@@ -19,7 +19,7 @@ docker network create my-network
 ```
 Then, run MySQL docker image :
 ```
-docker run -d -p 27017:27017 --name database \
+docker run -d -p 3306:3306 --name database \
 --net my-network \
 -e MYSQL_ROOT_PASSWORD=root \
 -e MYSQL_DATABASE=my_db \
@@ -33,7 +33,7 @@ For next steps, it will depend on the method you choose to run the app.
 docker run -d -p 5000:5000 --name flask-app \
 --net my-network \
 -e MYSQL_HOST=database \
--e DATABASE_PORT=27017 \
+-e DATABASE_PORT=3306 \
 -e MYSQL_USER=root \
 -e MYSQL_PASSWORD=root \
 marieme27/flask-app:v3.0.0
@@ -56,7 +56,7 @@ docker build -t flask-app .
 docker run -d -p 5000:5000 --name flask-app \
 --net my-network \
 -e MYSQL_HOST=database \
--e DATABASE_PORT=27017 \
+-e DATABASE_PORT=3306 \
 -e MYSQL_USER=root \
 -e MYSQL_PASSWORD=root \
 flask-app:latest

@@ -21,7 +21,7 @@ services:
   flask-app:
     depends_on:
       - database
-    image: marieme27/flask-app:v3.0.0
+    image: marieme27/flask-app:latest
     restart: unless-stopped
     container_name: flask-app
     env_file: ./.env

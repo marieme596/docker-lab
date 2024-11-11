@@ -19,6 +19,6 @@ def create_db_if_not_exists(mysql):
         return jsonify({
             "message": "Database created successfully or already existed",
             "welcome": "Welcome to doctor API :)"
-        })
+        }), 200
     except Exception as e:
         return jsonify(ErrorResponseModel(str(e), 500, "Database could not be created !!"))
